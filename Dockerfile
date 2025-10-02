@@ -9,13 +9,12 @@ RUN apt-get update \
 
 # Install Python dependencies
 COPY requirements.txt /app/backend
-RUN pip install --no-cache-dir mysqlclient \
-    && pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy project files
 COPY . /app/backend
 
 EXPOSE 8000
 
-# Start Django app (use entrypoint.sh if migrations needed)
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Run migrations then start Gunicorn
+CMD sh -c "python manage.py migrate --noinput && gunicorn notesapp.wsgi:application --bind 0.0.0.0:8000 --workers 3"
