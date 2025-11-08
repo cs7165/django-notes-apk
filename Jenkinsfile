@@ -1,29 +1,52 @@
-@Library('Shared')_
+@Library('Shared') _
 pipeline{
-    agent { label 'dev-server'}
+    agent { label  "worker"}
+    environment{
+        IMAGE_NAME = "doc105b/notes_app"
+        TAG = "1.0"
+    }
     
     stages{
-        stage("Code clone"){
+        stage("Code"){
             steps{
-                sh "whoami"
-            clone("https://github.com/LondheShubham153/django-notes-app.git","main")
+                script{
+                    clone("main","https://github.com/namanSingh101/django-notes-app/")
+                }
             }
         }
-        stage("Code Build"){
+        stage("Build"){
             steps{
-            dockerbuild("notes-app","latest")
+               script{
+                   build(IMAGE_NAME,TAG)
+               }
             }
         }
-        stage("Push to DockerHub"){
+        stage("Login"){
             steps{
-                dockerpush("dockerHubCreds","notes-app","latest")
+                script{
+                    dockerCred('dockerhub-creds')
+                }
+            }
+        }
+        stage("Image Push"){
+            steps{
+                script{
+                    pushImage(IMAGE_NAME,TAG)
+                }
+            }
+        }
+        stage("Test"){
+            steps{
+                echo "Testing the code"
+                script{
+                    buildpipe()
+                }
             }
         }
         stage("Deploy"){
             steps{
-                deploy()
+                echo "Deploying the code"
             }
         }
-        
     }
 }
