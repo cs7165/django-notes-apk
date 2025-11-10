@@ -3,7 +3,7 @@ pipeline{
     agent { label  "worker"}
     environment{
         IMAGE_NAME = "doc105b/notes_app"
-        TAG = "2.0"
+        TAG = "3.0"
     }
     
     stages{
