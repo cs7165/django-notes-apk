@@ -1,0 +1,16 @@
+# runtime data / volumes
+data/
+**/data/**
+**/mysql/**
+**/#*#
+**/.#*
+
+# common excludes
+.git
+.gitignore
+.env
+__pycache__/
+*.pyc
+*.log
+docker-compose*.yml
+compose*.yml
